@@ -14,3 +14,8 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+
+//myself routes for working on vuejs
+Route::get('vuejs','VueController@index');
+
