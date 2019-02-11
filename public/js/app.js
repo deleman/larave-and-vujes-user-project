@@ -1836,6 +1836,75 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ __webpack_exports__["default"] = ({
   data: function data() {
     return {
@@ -1844,7 +1913,13 @@ __webpack_require__.r(__webpack_exports__);
       last_page: '',
       next_page: '',
       prev_page: '',
-      search: ''
+      search: '',
+      userIdDelete: '',
+      // for edits user
+      user_id_edit: '',
+      user_name_edit: '',
+      user_email_edit: '',
+      user_password_edit: ''
     };
   },
   beforeMount: function beforeMount() {
@@ -1880,6 +1955,79 @@ __webpack_require__.r(__webpack_exports__);
       } else {
         return false;
       }
+    },
+    //delete user and update informations
+    deleteUser: function deleteUser(id) {
+      var _this2 = this;
+
+      fetch("/delete/".concat(id)).then(function (ref) {
+        ref.json();
+
+        if (ref.status == 200) {
+          _this2.getInfo();
+
+          _this2.search = '';
+        }
+      });
+    },
+    //set user id for delete
+    getIdDeleteUser: function getIdDeleteUser(id) {
+      this.userIdDelete = id;
+    },
+    //method for searchpost
+    searchPost: function searchPost() {
+      var _this3 = this;
+
+      var link = 'search/' + this.search;
+      fetch(link).then(function (ref) {
+        return ref.json();
+      }).then(function (ref) {
+        _this3.users = ref.data;
+        _this3.current_page = ref.current_page;
+        _this3.last_page = ref.last_page;
+        _this3.next_page = ref.next_page_url;
+        _this3.prev_page = ref.prev_page_url;
+      }).catch(function (err) {
+        console.log(err);
+      });
+    },
+    //edit user and update informations
+    editUser: function editUser(id) {
+      var bodyFormData = new FormData();
+      bodyFormData.set('id', this.user_id_edit);
+      bodyFormData.set('name', this.user_name_edit);
+      bodyFormData.set('email', this.user_email_edit);
+      bodyFormData.set('password', this.user_password_edit);
+      var updateUrl = 'http://localhost:8000/update';
+      alert(updateUrl);
+      axios({
+        method: 'post',
+        url: updateUrl,
+        data: bodyFormData,
+        // `headers` are custom headers to be sent
+        headers: {
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        xsrfCookieName: 'XSRF-TOKEN' // default
+
+      }).then(function (response) {
+        //handle success
+        alert(response.status);
+        console.log(response);
+      }).catch(function (response) {
+        //handle error
+        alert(response);
+        console.log(response);
+      });
+    },
+    getInfoEditUser: function getInfoEditUser(id, name, email) {
+      this.user_id_edit = id;
+      this.user_name_edit = name;
+      this.user_email_edit = email;
+      alert(id, name, email);
+      alert(this.user_id_edit);
+      alert(this.user_name_edit);
+      alert(this.user_email_edit);
     }
   }
 });
@@ -36793,7 +36941,7 @@ var render = function() {
     "div",
     { staticClass: "m-auto col-sm-11 bg-dark py-3" },
     [
-      _c("div", { staticClass: "m-auto col-6" }, [
+      _c("div", { staticClass: "m-auto col-md-6 col-sm-8" }, [
         _c(
           "form",
           {
@@ -36819,11 +36967,15 @@ var render = function() {
                 staticClass: "form-control",
                 attrs: {
                   type: "text",
+                  placeholder: "search name or email of user...",
                   "aria-label": "Sizing example input",
                   "aria-describedby": "inputGroup-sizing-default"
                 },
                 domProps: { value: _vm.search },
                 on: {
+                  keyup: function($event) {
+                    return _vm.searchPost()
+                  },
                   input: function($event) {
                     if ($event.target.composing) {
                       return
@@ -36856,10 +37008,283 @@ var render = function() {
               _c(
                 "button",
                 {
-                  staticClass: "float-right btn btn-danger",
-                  on: { key: function($event) {} }
+                  staticClass: "btn btn-primary float-right",
+                  attrs: {
+                    type: "button",
+                    "data-toggle": "modal",
+                    "data-target": "#exampleModaledit"
+                  },
+                  on: {
+                    click: function($event) {
+                      return _vm.getInfoEditUser(
+                        name.user_id,
+                        name.name,
+                        name.email
+                      )
+                    }
+                  }
                 },
-                [_vm._v("delete ")]
+                [_vm._v("\n                    edit\n                    ")]
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  staticClass: "modal fade",
+                  attrs: {
+                    id: "exampleModaledit",
+                    tabindex: "-1",
+                    role: "dialog",
+                    "aria-labelledby": "exampleModalLabeledit",
+                    "aria-hidden": "true"
+                  }
+                },
+                [
+                  _c(
+                    "div",
+                    {
+                      staticClass: "modal-dialog",
+                      attrs: { role: "document" }
+                    },
+                    [
+                      _c("div", { staticClass: "modal-content" }, [
+                        _vm._m(1, true),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "modal-body" }, [
+                          _c(
+                            "form",
+                            {
+                              attrs: { method: "post" },
+                              on: {
+                                submit: function($event) {
+                                  $event.preventDefault()
+                                  return _vm.onSubmit($event)
+                                }
+                              }
+                            },
+                            [
+                              _c(
+                                "div",
+                                {
+                                  staticClass: "form-group",
+                                  attrs: { id: "editname" }
+                                },
+                                [
+                                  _c("label", [_vm._v("Email address")]),
+                                  _vm._v(" "),
+                                  _c("input", {
+                                    staticClass: "form-control",
+                                    attrs: {
+                                      type: "text",
+                                      "aria-describedby":
+                                        "emailHelp for name ser",
+                                      placeholder: "you name ..."
+                                    },
+                                    domProps: { value: _vm.user_name_edit }
+                                  }),
+                                  _vm._v(" "),
+                                  _c(
+                                    "small",
+                                    {
+                                      staticClass: "form-text text-muted",
+                                      attrs: { id: "emailHelp1" }
+                                    },
+                                    [
+                                      _vm._v(
+                                        "We'll never share your email with anyone else."
+                                      )
+                                    ]
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "div",
+                                {
+                                  staticClass: "form-group",
+                                  attrs: { id: "editemail" }
+                                },
+                                [
+                                  _c("label", [_vm._v("Email address")]),
+                                  _vm._v(" "),
+                                  _c("input", {
+                                    staticClass: "form-control",
+                                    attrs: {
+                                      type: "email",
+                                      "aria-describedby":
+                                        "emailHelp for email one",
+                                      placeholder: "your email ..."
+                                    },
+                                    domProps: { value: _vm.user_email_edit }
+                                  }),
+                                  _vm._v(" "),
+                                  _c(
+                                    "small",
+                                    {
+                                      staticClass: "form-text text-muted",
+                                      attrs: { id: "emailHelp2" }
+                                    },
+                                    [
+                                      _vm._v(
+                                        "We'll never share your email with anyone else."
+                                      )
+                                    ]
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "div",
+                                {
+                                  staticClass: "form-group",
+                                  attrs: { id: "editpass" }
+                                },
+                                [
+                                  _c("label", [_vm._v("Password")]),
+                                  _vm._v(" "),
+                                  _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.user_password_edit,
+                                        expression: "user_password_edit"
+                                      }
+                                    ],
+                                    staticClass: "form-control",
+                                    attrs: {
+                                      type: "password",
+                                      placeholder: "Password"
+                                    },
+                                    domProps: { value: _vm.user_password_edit },
+                                    on: {
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.user_password_edit =
+                                          $event.target.value
+                                      }
+                                    }
+                                  })
+                                ]
+                              )
+                            ]
+                          )
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "modal-footer" }, [
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-secondary",
+                              attrs: { type: "button", "data-dismiss": "modal" }
+                            },
+                            [_vm._v("Close")]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-danger",
+                              attrs: {
+                                type: "button",
+                                "data-dismiss": "modal"
+                              },
+                              on: {
+                                click: function($event) {
+                                  return _vm.editUser(_vm.userIdDelete)
+                                }
+                              }
+                            },
+                            [_vm._v("Save")]
+                          )
+                        ])
+                      ])
+                    ]
+                  )
+                ]
+              ),
+              _vm._v(" "),
+              _c(
+                "button",
+                {
+                  staticClass: "btn btn-danger float-right",
+                  attrs: {
+                    type: "button",
+                    "data-toggle": "modal",
+                    "data-target": "#exampleModal"
+                  },
+                  on: {
+                    click: function($event) {
+                      return _vm.getIdDeleteUser(name.user_id)
+                    }
+                  }
+                },
+                [_vm._v("\n                    delete\n                    ")]
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                {
+                  staticClass: "modal fade",
+                  attrs: {
+                    id: "exampleModal",
+                    tabindex: "-1",
+                    role: "dialog",
+                    "aria-labelledby": "exampleModalLabel",
+                    "aria-hidden": "true"
+                  }
+                },
+                [
+                  _c(
+                    "div",
+                    {
+                      staticClass: "modal-dialog",
+                      attrs: { role: "document" }
+                    },
+                    [
+                      _c("div", { staticClass: "modal-content" }, [
+                        _vm._m(2, true),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "modal-body" }, [
+                          _c("p", [
+                            _vm._v("Are You Sure Delete User "),
+                            _c("b", [_vm._v(_vm._s(name.name))])
+                          ])
+                        ]),
+                        _vm._v(" "),
+                        _c("div", { staticClass: "modal-footer" }, [
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-secondary",
+                              attrs: { type: "button", "data-dismiss": "modal" }
+                            },
+                            [_vm._v("Close")]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "button",
+                            {
+                              staticClass: "btn btn-danger",
+                              attrs: {
+                                type: "button",
+                                "data-dismiss": "modal"
+                              },
+                              on: {
+                                click: function($event) {
+                                  return _vm.deleteUser(_vm.userIdDelete)
+                                }
+                              }
+                            },
+                            [_vm._v("Delete")]
+                          )
+                        ])
+                      ])
+                    ]
+                  )
+                ]
               )
             ],
             2
@@ -36971,7 +37396,57 @@ var staticRenderFns = [
           staticClass: "input-group-text",
           attrs: { id: "inputGroup-sizing-default" }
         },
-        [_vm._v("Default")]
+        [_vm._v("search")]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header bg-danger" }, [
+      _c(
+        "h5",
+        { staticClass: "modal-title", attrs: { id: "exampleModalLabeledit" } },
+        [_vm._v("Edit User?")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
+      )
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("div", { staticClass: "modal-header bg-danger" }, [
+      _c(
+        "h5",
+        { staticClass: "modal-title", attrs: { id: "exampleModalLabel" } },
+        [_vm._v("Delete User?")]
+      ),
+      _vm._v(" "),
+      _c(
+        "button",
+        {
+          staticClass: "close",
+          attrs: {
+            type: "button",
+            "data-dismiss": "modal",
+            "aria-label": "Close"
+          }
+        },
+        [_c("span", { attrs: { "aria-hidden": "true" } }, [_vm._v("×")])]
       )
     ])
   }

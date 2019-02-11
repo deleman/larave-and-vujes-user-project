@@ -19,3 +19,19 @@ Route::get('/', function () {
 //myself routes for working on vuejs
 Route::get('vuejs','VueController@index');
 
+//delte user
+Route::get('delete/{id}','VueController@delete');
+
+//update or edit user
+Route::post('update','VueController@update');
+
+//search user
+Route::get('search/{text}','VueController@search');
+
+
+Route::post('getinfo','VueController@update')->name('form');
+Route::get('form',function(){
+    return view('form');
+});
+
+
