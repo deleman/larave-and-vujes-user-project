@@ -1998,9 +1998,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     editUser: function editUser() {
       var dataMemberObj = this;
       axios.post('/search', {
-        id: this.user_id_edit,
-        name: this.user_name_edit,
-        email: this.user_email_edit
+        search: this.earch
       }).then(function (response) {
         if (response.status) dataMemberObj.getInfo();
       }).catch(function (error) {
