@@ -26,6 +26,10 @@ class VueController extends Controller
 
     //saerch for user with name and email
     public function search($text){
+        //if text is empty
+        if(strlen($text)<1){
+            return redirect()->route('vuejs');
+        }
         // select locate('o',name),name from  table_posts where locate('o',name) >0 order by locate('o',name);
         $info = DB::table('table_posts')->select('id as user_id','name','email')->where('name','like','%'.$text.'%')->orderByRaw('locate("'.$text.'",name)')->paginate(10);
         return $info;
@@ -38,7 +42,6 @@ class VueController extends Controller
         $name = $request->name;
         $email = $request->email;
         $password = $request->password;
-
 
         if($request->id){
             $result = DB::table('table_posts')

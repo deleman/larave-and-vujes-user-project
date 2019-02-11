@@ -17,7 +17,7 @@ Route::get('/', function () {
 
 
 //myself routes for working on vuejs
-Route::get('vuejs','VueController@index');
+Route::get('vuejs','VueController@index')->name('index');
 
 //delte user
 Route::get('delete/{id}','VueController@delete');

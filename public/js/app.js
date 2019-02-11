@@ -1796,6 +1796,10 @@ __webpack_require__.r(__webpack_exports__);
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
+var _methods;
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
 //
 //
 //
@@ -1925,7 +1929,7 @@ __webpack_require__.r(__webpack_exports__);
   beforeMount: function beforeMount() {
     this.getInfo();
   },
-  methods: {
+  methods: (_methods = {
     getInfo: function getInfo() {
       var _this = this;
 
@@ -1991,45 +1995,34 @@ __webpack_require__.r(__webpack_exports__);
         console.log(err);
       });
     },
-    //edit user and update informations
-    editUser: function editUser(id) {
-      var bodyFormData = new FormData();
-      bodyFormData.set('id', this.user_id_edit);
-      bodyFormData.set('name', this.user_name_edit);
-      bodyFormData.set('email', this.user_email_edit);
-      bodyFormData.set('password', this.user_password_edit);
-      var updateUrl = 'http://localhost:8000/update';
-      alert(updateUrl);
-      axios({
-        method: 'post',
-        url: updateUrl,
-        data: bodyFormData,
-        // `headers` are custom headers to be sent
-        headers: {
-          'X-Requested-With': 'XMLHttpRequest'
-        },
-        xsrfCookieName: 'XSRF-TOKEN' // default
-
+    editUser: function editUser() {
+      var dataMemberObj = this;
+      axios.post('/search', {
+        id: this.user_id_edit,
+        name: this.user_name_edit,
+        email: this.user_email_edit
       }).then(function (response) {
-        //handle success
-        alert(response.status);
-        console.log(response);
-      }).catch(function (response) {
-        //handle error
-        alert(response);
-        console.log(response);
+        if (response.status) dataMemberObj.getInfo();
+      }).catch(function (error) {
+        console.log(error);
       });
-    },
-    getInfoEditUser: function getInfoEditUser(id, name, email) {
-      this.user_id_edit = id;
-      this.user_name_edit = name;
-      this.user_email_edit = email;
-      alert(id, name, email);
-      alert(this.user_id_edit);
-      alert(this.user_name_edit);
-      alert(this.user_email_edit);
     }
-  }
+  }, _defineProperty(_methods, "editUser", function editUser() {
+    var dataMemberObj = this;
+    axios.post('/update', {
+      id: this.user_id_edit,
+      name: this.user_name_edit,
+      email: this.user_email_edit
+    }).then(function (response) {
+      if (response.status) dataMemberObj.getInfo();
+    }).catch(function (error) {
+      console.log(error);
+    });
+  }), _defineProperty(_methods, "getInfoEditUser", function getInfoEditUser(id, name, email) {
+    this.user_id_edit = id;
+    this.user_name_edit = name;
+    this.user_email_edit = email;
+  }), _methods)
 });
 
 /***/ }),
@@ -37073,6 +37066,14 @@ var render = function() {
                                   _c("label", [_vm._v("Email address")]),
                                   _vm._v(" "),
                                   _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.user_name_edit,
+                                        expression: "user_name_edit"
+                                      }
+                                    ],
                                     staticClass: "form-control",
                                     attrs: {
                                       type: "text",
@@ -37080,7 +37081,15 @@ var render = function() {
                                         "emailHelp for name ser",
                                       placeholder: "you name ..."
                                     },
-                                    domProps: { value: _vm.user_name_edit }
+                                    domProps: { value: _vm.user_name_edit },
+                                    on: {
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.user_name_edit = $event.target.value
+                                      }
+                                    }
                                   }),
                                   _vm._v(" "),
                                   _c(
@@ -37108,6 +37117,14 @@ var render = function() {
                                   _c("label", [_vm._v("Email address")]),
                                   _vm._v(" "),
                                   _c("input", {
+                                    directives: [
+                                      {
+                                        name: "model",
+                                        rawName: "v-model",
+                                        value: _vm.user_email_edit,
+                                        expression: "user_email_edit"
+                                      }
+                                    ],
                                     staticClass: "form-control",
                                     attrs: {
                                       type: "email",
@@ -37115,7 +37132,16 @@ var render = function() {
                                         "emailHelp for email one",
                                       placeholder: "your email ..."
                                     },
-                                    domProps: { value: _vm.user_email_edit }
+                                    domProps: { value: _vm.user_email_edit },
+                                    on: {
+                                      input: function($event) {
+                                        if ($event.target.composing) {
+                                          return
+                                        }
+                                        _vm.user_email_edit =
+                                          $event.target.value
+                                      }
+                                    }
                                   }),
                                   _vm._v(" "),
                                   _c(

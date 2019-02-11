@@ -37,12 +37,12 @@
                                 <form method="post" v-on:submit.prevent="onSubmit">
                                     <div class="form-group" id="editname">
                                         <label>Email address</label>
-                                        <input type="text" class="form-control"  aria-describedby="emailHelp for name ser" v-bind:value="user_name_edit" placeholder="you name ...">
+                                        <input type="text" class="form-control"  aria-describedby="emailHelp for name ser" v-model="user_name_edit" placeholder="you name ...">
                                         <small id="emailHelp1" class="form-text text-muted">We'll never share your email with anyone else.</small>
                                     </div>
                                     <div class="form-group" id="editemail">
                                         <label>Email address</label>
-                                        <input type="email" class="form-control" v-bind:value="user_email_edit" aria-describedby="emailHelp for email one" placeholder="your email ...">
+                                        <input type="email" class="form-control" v-model="user_email_edit" aria-describedby="emailHelp for email one" placeholder="your email ...">
                                         <small id="emailHelp2" class="form-text text-muted">We'll never share your email with anyone else.</small>
                                     </div>
                                     <div class="form-group" id="editpass">
@@ -187,44 +187,43 @@ export default {
                 console.log(err);
             })
         },
+        editUser() {
 
-        //edit user and update informations
-        editUser:function(id){
-            let bodyFormData = new FormData();
-            bodyFormData.set('id', this.user_id_edit);
-            bodyFormData.set('name', this.user_name_edit);
-            bodyFormData.set('email', this.user_email_edit);
-            bodyFormData.set('password', this.user_password_edit);
-            let updateUrl= 'http://localhost:8000/update';
-            alert(updateUrl);
-            axios({
-                method: 'post',
-                url: updateUrl,
-                data: bodyFormData,
-                // `headers` are custom headers to be sent
-                headers: {'X-Requested-With': 'XMLHttpRequest'},
-                xsrfCookieName: 'XSRF-TOKEN', // default
+                let dataMemberObj = this;
 
+                    axios.post('/search', {
+                    search:this.earch
                 })
                 .then(function (response) {
-                    //handle success
-                    alert(response.status);
-                    console.log(response);
+                    if(response.status)
+                        dataMemberObj.getInfo();
                 })
-                .catch(function (response) {
-                    //handle error
-                    alert(response);
-                    console.log(response);
+                .catch(function (error) {
+                    console.log(error);
                 });
-        },
+            },
+        editUser() {
+
+                let dataMemberObj = this;
+
+                    axios.post('/update', {
+                    id: this.user_id_edit,
+                    name: this.user_name_edit,
+                    email: this.user_email_edit
+                })
+                .then(function (response) {
+                    if(response.status)
+                        dataMemberObj.getInfo();
+                })
+                .catch(function (error) {
+                    console.log(error);
+                });
+            }
+            ,
         getInfoEditUser:function(id,name,email){
             this.user_id_edit = id;
             this.user_name_edit = name;
             this.user_email_edit = email
-            alert(id,name,email);
-            alert(this.user_id_edit);
-            alert(this.user_name_edit);
-            alert(this.user_email_edit);
         }
 
     }
